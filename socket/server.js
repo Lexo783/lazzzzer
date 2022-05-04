@@ -1,7 +1,7 @@
 var SerialPort = require('serialport');
 var xbee_api = require('xbee-api');
 var C = xbee_api.constants;
-var storage = require("./storage")
+// var storage = require("./storage")
 require('dotenv').config()
 
 
@@ -12,7 +12,7 @@ var xbeeAPI = new xbee_api.XBeeAPI({
 });
 
 let serialport = new SerialPort(SERIAL_PORT, {
-  baudRate: process.env.SERIAL_BAUDRATE || 9600,
+  baudRate: 9600,
 }, function (err) {
   if (err) {
     return console.log('Error: ', err.message)
@@ -23,17 +23,20 @@ serialport.pipe(xbeeAPI.parser);
 xbeeAPI.builder.pipe(serialport);
 
 serialport.on("open", function () {
-  var frame_obj = { // AT Request to be sent
-    type: C.FRAME_TYPE.AT_COMMAND,
-    command: "NI",
-    commandParameter: [],
-  };
 
-  xbeeAPI.builder.write(frame_obj);
+  console.log("serial opened")
+  // let frame_ob = { // AT Request to be sent
+  //   type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+  //   destination64: "0013a20041a7133c",
+  //   command: "D0",
+  //   remoteCommandOption: [0X02],
+  //   commandParameter: [0X00],
+  // };
+  // xbeeAPI.builder.write(frame_ob);
 
-  frame_obj = { // AT Request to be sent
+  let frame_obj = { // AT Request to be sent
     type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
-    destination64: "FFFFFFFFFFFFFFFF",
+    destination64: "0",
     command: "NI",
     commandParameter: [],
   };
@@ -46,7 +49,7 @@ serialport.on("open", function () {
 // storage.listSensors().then((sensors) => sensors.forEach((sensor) => console.log(sensor.data())))
 
 xbeeAPI.parser.on("data", function (frame) {
-
+  console.log(frame)
   //on new device is joined, register it
 
   //on packet received, dispatch event
@@ -67,10 +70,29 @@ xbeeAPI.parser.on("data", function (frame) {
 
     console.log("ZIGBEE_IO_DATA_SAMPLE_RX")
     console.log(frame.analogSamples.AD0)
-    storage.registerSample(frame.remote64,frame.analogSamples.AD0 )
+
+    /*
+    if (frame.digitalSamples.DIO2) {
+      console.log("its open")
+
+      var frame_obj = { // AT Request to be sent
+        type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+        destination64: "FFFFFFFFFFFFFFFF",
+        command: "BH",
+        commandParameter: [
+          0x01
+        ],
+      };
+      xbeeAPI.builder.write(frame_obj);
+
+    } else {
+      console.log("its not open")
+    }*/
+    //storage.registerSample(frame.remote64,frame.analogSamples.AD0 )
 
   } else if (C.FRAME_TYPE.REMOTE_COMMAND_RESPONSE === frame.type) {
     console.log("REMOTE_COMMAND_RESPONSE")
+    console.debug(frame);
   } else {
     console.debug(frame);
     let dataReceived = String.fromCharCode.apply(null, frame.commandData)
