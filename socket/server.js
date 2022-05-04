@@ -3,7 +3,7 @@ var addScore = require('./src/addScore');
 var SerialPort = require('serialport');
 var xbee_api = require('xbee-api');
 var C = xbee_api.constants;
-// var storage = require("./storage")
+var storage = require("./storage")
 require('dotenv').config()
 
 
@@ -68,7 +68,7 @@ xbeeAPI.parser.on("data", function(frame) {
 
 
         console.log("ZIGBEE_IO_DATA_SAMPLE_RX")
-        console.log(frame.analogSamples.AD0)
+            //console.log(frame.analogSamples.AD0)
 
         /*
         if (frame.digitalSamples.DIO2) {
@@ -97,7 +97,6 @@ xbeeAPI.parser.on("data", function(frame) {
         let dataReceived = String.fromCharCode.apply(null, frame.commandData)
         console.log(dataReceived);
     }
-
 
     if (C.FRAME_TYPE.NODE_IDENTIFICATION === frame.type) {
         let dataReceived = String.fromCharCode.apply(null, frame.nodeIdentifier);
