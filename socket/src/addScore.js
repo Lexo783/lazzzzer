@@ -11,7 +11,7 @@ module.exports.addScores = function(killed, killer) {
         //data.forEach((user) => console.log(user.data()))
     })
 
-
+    //test
     //get one user by his user ID in parameter
     var awaitUser = database.getOneUser('0013a20041a713bc');
     awaitUser.then(data => {
