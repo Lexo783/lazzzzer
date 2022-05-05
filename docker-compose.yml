@@ -135,7 +135,7 @@ services:
         protocol: tcp
 
   socket:
-    # Use a static website hosting service in production
+    # Use a static website hosting Services in production
     # See https://facebook.github.io/create-react-app/docs/deployment
     image: ${ADMIN_IMAGE:-quay.io/api-platform/socket}
     build:

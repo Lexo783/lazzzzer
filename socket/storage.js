@@ -51,10 +51,10 @@ module.exports.listSensors = function() {
 
 
 /**
- * Creates an user in database if the user given in parameter doesnt exist, if he exists overwites his informations 
- * @param {String} userId 
- * @param {String} name 
- * @param {Int} points 
+ * Creates an user in database if the user given in parameter doesnt exist, if he exists overwites his informations
+ * @param {String} userId
+ * @param {String} name
+ * @param {Int} points
  */
 module.exports.writeUserData = async function(userId, name, points) {
 
@@ -62,7 +62,8 @@ module.exports.writeUserData = async function(userId, name, points) {
 
     const user = {
         userId: userId,
-        date: Date.now(),
+        name: name,
+        points: points,
     }
 
     await docRef.get().then((snapshotDoc) => {
@@ -76,8 +77,8 @@ module.exports.writeUserData = async function(userId, name, points) {
 
 /**
  * Get one user from database by his userId
- * @param {String} userId 
- * @returns 
+ * @param {String} userId
+ * @returns
  */
 module.exports.getOneUser = async function(userId) {
     const docRef = db.collection('users').doc(userId);
@@ -88,8 +89,8 @@ module.exports.getOneUser = async function(userId) {
 
 
 /**
- * get all users 
- * @returns a collection of all users 
+ * get all users
+ * @returns a collection of all users
  */
 module.exports.getAllUsers = function() {
     const docRef = db.collection('users');
