@@ -1,13 +1,12 @@
 modules.exports.StartingGame = function (isPlaying) {
-  setTimeout(function () {
-    if(game(isPlaying)) {
-      console.log('KEKETE')
-      return true
+  const interval = setInterval(function () {
+    if(isPlaying) {
+      console.log("playe")
     } else {
-      console.log("A LENVER")
-      return true
+      console.log("NO")
     }
-  }, 3000)
+  })
+  return interval
 }
 
 function game(isPlay) {
