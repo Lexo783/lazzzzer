@@ -1,49 +1,49 @@
 var addScore = require('./src/addScore');
-
+const game = require('./src/Controller/GameController')
 var SerialPort = require('serialport');
 var xbee_api = require('xbee-api');
 var C = xbee_api.constants;
 var storage = require("./storage");
-const { StringSplit } = require('./src/stringSplit');
+const {StringSplit} = require('./src/stringSplit');
 require('dotenv').config()
 
 
 const SERIAL_PORT = process.env.SERIAL_PORT;
 
 var xbeeAPI = new xbee_api.XBeeAPI({
-    api_mode: 2
+  api_mode: 2
 });
 
 let serialport = new SerialPort(SERIAL_PORT, {
-    baudRate: 9600,
-}, function(err) {
-    if (err) {
-        return console.log('Error: ', err.message)
-    }
+  baudRate: 9600,
+}, function (err) {
+  if (err) {
+    return console.log('Error: ', err.message)
+  }
 });
 
 serialport.pipe(xbeeAPI.parser);
 xbeeAPI.builder.pipe(serialport);
 
-serialport.on("open", function() {
+serialport.on("open", function () {
+  game.StartingGame()
+  console.log("serial opened")
+  // let frame_ob = { // AT Request to be sent
+  //   type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+  //   destination64: "0013a20041a7133c",
+  //   command: "D0",
+  //   remoteCommandOption: [0X02],
+  //   commandParameter: [0X00],
+  // };
+  // xbeeAPI.builder.write(frame_ob);
 
-    console.log("serial opened")
-        // let frame_ob = { // AT Request to be sent
-        //   type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
-        //   destination64: "0013a20041a7133c",
-        //   command: "D0",
-        //   remoteCommandOption: [0X02],
-        //   commandParameter: [0X00],
-        // };
-        // xbeeAPI.builder.write(frame_ob);
-
-    let frame_obj = { // AT Request to be sent
-        type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
-        destination64: "0",
-        command: "NI",
-        commandParameter: [],
-    };
-    xbeeAPI.builder.write(frame_obj);
+  let frame_obj = { // AT Request to be sent
+    type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+    destination64: "0",
+    command: "NI",
+    commandParameter: [],
+  };
+  xbeeAPI.builder.write(frame_obj);
 
 });
 
@@ -51,75 +51,77 @@ serialport.on("open", function() {
 
 storage.listSensors().then((sensors) => sensors.forEach((sensor) => console.log(sensor.data())))
 
-xbeeAPI.parser.on("data", function(frame) {
+module.exports.receiveDataByXBEE = function () {
+  xbeeAPI.parser.on("data", function (frame) {
     console.log(frame)
-        //on new device is joined, register it
+    //on new device is joined, register it
 
     //on packet received, dispatch event
     //let dataReceived = String.fromCharCode.apply(null, frame.data);
     if (C.FRAME_TYPE.ZIGBEE_RECEIVE_PACKET === frame.type) {
-        //console.log("C.FRAME_TYPE.ZIGBEE_RECEIVE_PACKET");
-        let dataReceived = String.fromCharCode.apply(null, frame.data);
-        //console.log(">> ZIGBEE_RECEIVE_PACKET >", dataReceived);
-        //console.log(dataReceived)
+      //console.log("C.FRAME_TYPE.ZIGBEE_RECEIVE_PACKET");
+      let dataReceived = String.fromCharCode.apply(null, frame.data);
+      //console.log(">> ZIGBEE_RECEIVE_PACKET >", dataReceived);
+      //console.log(dataReceived)
 
 
-        //add score to the killer, decrease score to the killed
-        addScore.addScores(frame.remote64, dataReceived)
+      //add score to the killer, decrease score to the killed
+      addScore.addScores(frame.remote64, dataReceived)
 
 
-        console.log("ZIGBEE_IO_DATA_SAMPLE_RX")
-            //console.log(frame.analogSamples.AD0)
+      console.log("ZIGBEE_IO_DATA_SAMPLE_RX")
+      //console.log(frame.analogSamples.AD0)
 
-        console.debug("-------------")
-        console.debug(StringSplit(dataReceived))
+      console.debug("-------------")
+      console.debug(StringSplit(dataReceived))
 
-        /*
-        if (frame.digitalSamples.DIO2) {
-          console.log("its open")
+      /*
+      if (frame.digitalSamples.DIO2) {
+        console.log("its open")
 
-          var frame_obj = { // AT Request to be sent
-            type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
-            destination64: "FFFFFFFFFFFFFFFF",
-            command: "BH",
-            commandParameter: [
-              0x01
-            ],
-          };
-          xbeeAPI.builder.write(frame_obj);
+        var frame_obj = { // AT Request to be sent
+          type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
+          destination64: "FFFFFFFFFFFFFFFF",
+          command: "BH",
+          commandParameter: [
+            0x01
+          ],
+        };
+        xbeeAPI.builder.write(frame_obj);
 
-        } else {
-          console.log("its not open")
-        }*/
-        //storage.registerSample(frame.remote64,frame.analogSamples.AD0 )
+      } else {
+        console.log("its not open")
+      }*/
+      //storage.registerSample(frame.remote64,frame.analogSamples.AD0 )
 
     } else if (C.FRAME_TYPE.REMOTE_COMMAND_RESPONSE === frame.type) {
-        console.log("REMOTE_COMMAND_RESPONSE")
-        console.debug(frame);
+      console.log("REMOTE_COMMAND_RESPONSE")
+      console.debug(frame);
 
     } else {
-        console.debug(frame);
-        let dataReceived = String.fromCharCode.apply(null, frame.commandData)
-        console.log(dataReceived);
+      console.debug(frame);
+      let dataReceived = String.fromCharCode.apply(null, frame.commandData)
+      console.log(dataReceived);
     }
 
     if (C.FRAME_TYPE.NODE_IDENTIFICATION === frame.type) {
-        let dataReceived = String.fromCharCode.apply(null, frame.nodeIdentifier);
-        //console.log("NODE_IDENTIFICATION");
-        storage.registerSensor(frame.remote64)
+      let dataReceived = String.fromCharCode.apply(null, frame.nodeIdentifier);
+      //console.log("NODE_IDENTIFICATION");
+      storage.registerSensor(frame.remote64)
 
     } else if (C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX === frame.type) {
 
-        //console.log("ZIGBEE_IO_DATA_SAMPLE_RX")
-        //console.log(frame.analogSamples.AD0)
-        storage.registerSample(frame.remote64, frame.analogSamples.AD0)
+      //console.log("ZIGBEE_IO_DATA_SAMPLE_RX")
+      //console.log(frame.analogSamples.AD0)
+      storage.registerSample(frame.remote64, frame.analogSamples.AD0)
 
     } else if (C.FRAME_TYPE.REMOTE_COMMAND_RESPONSE === frame.type) {
-        //console.log("REMOTE_COMMAND_RESPONSE")
+      //console.log("REMOTE_COMMAND_RESPONSE")
     } else {
-        //console.debug(frame);
-        let dataReceived = String.fromCharCode.apply(null, frame.commandData)
-            //console.log(dataReceived);
+      //console.debug(frame);
+      let dataReceived = String.fromCharCode.apply(null, frame.commandData)
+      //console.log(dataReceived);
     }
 
-});
+  });
+}
