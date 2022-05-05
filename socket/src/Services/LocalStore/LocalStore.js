@@ -17,7 +17,7 @@ module.exports.readData = function (pointer = null) {
   var data = fs.readFileSync('./config.json'), myObj;
 
   try {
-    myObj = JSON.parse(data);
+    myObj = JSON.parse(data.toString());
     console.dir(myObj);
     if (pointer === null) {
       return myObj
