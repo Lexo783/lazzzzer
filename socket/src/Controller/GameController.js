@@ -8,7 +8,7 @@ module.exports.StartingGame = function () {
    * et stocker les ports
    */
   var data = {
-    users: {
+    users: [{
       0: {
         'name' : "Lexo"
       },
@@ -16,6 +16,7 @@ module.exports.StartingGame = function () {
         'name' : "ANTOINE LE MEC TROP BEAU JE SUIS SUR TU SUCE MIEUX QUE MON EX"
       },
     }
+    ]
   }
   localStorage.writeData(data)
   localStorage.readData(users)
