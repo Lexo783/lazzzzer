@@ -1,6 +1,6 @@
 const express = require('express');
-const localStorage = require("../src/Services/LocalStore/LocalStore");
-const game = require('../src/Controller/GameController')
+const localStorage = require("./src/Services/LocalStore/LocalStore");
+const game = require('./src/Controller/GameController')
 
 const app = express();
 const port = process.env.PORT || 8080;
