@@ -4,9 +4,9 @@ var obj = {
 
 module.exports.writeData = function (key, data) {
   if (key in obj) {
-    obj[key] = data
+    obj[key] = {...obj, ...data}
   } else {
-    obj = data
+    obj = {...obj, ...data}
   }
 }
 
