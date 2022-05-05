@@ -9,16 +9,14 @@ module.exports.StartingGame = function() {
      */
     var data = {
         "users": [{
-            0: {
                 'name': 'Lexo'
             },
-            1: {
-                'name': 'ANTOINE LE MEC TROP BEAU JE SUIS SUR TU SUCE MIEUX QUE MON EX'
-            },
-        }]
+            { 'name': 'ANTOINE LE MEC TROP BEAU JE SUIS SUR TU SUCE MIEUX QUE MON EX' },
+        ]
     }
-    localStorage.writeData(data)
-    localStorage.readData('users')
+    localStorage.writeData('users', data)
+    mesCouilles = localStorage.readData('users')
+    console.log(mesCouilles[0])
     server.receiveDataByXBEE()
 
 }
