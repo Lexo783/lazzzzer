@@ -3,7 +3,8 @@ var addScore = require('./src/addScore');
 var SerialPort = require('serialport');
 var xbee_api = require('xbee-api');
 var C = xbee_api.constants;
-var storage = require("./storage")
+var storage = require("./storage");
+const { StringSplit } = require('./src/stringSplit');
 require('dotenv').config()
 
 
@@ -70,6 +71,9 @@ xbeeAPI.parser.on("data", function(frame) {
         console.log("ZIGBEE_IO_DATA_SAMPLE_RX")
             //console.log(frame.analogSamples.AD0)
 
+        console.debug("-------------")
+        console.debug(StringSplit(dataReceived))
+
         /*
         if (frame.digitalSamples.DIO2) {
           console.log("its open")
@@ -92,6 +96,7 @@ xbeeAPI.parser.on("data", function(frame) {
     } else if (C.FRAME_TYPE.REMOTE_COMMAND_RESPONSE === frame.type) {
         console.log("REMOTE_COMMAND_RESPONSE")
         console.debug(frame);
+
     } else {
         console.debug(frame);
         let dataReceived = String.fromCharCode.apply(null, frame.commandData)
