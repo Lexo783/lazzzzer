@@ -37,20 +37,20 @@ serialport.on("open", function () {
   // };
   // xbeeAPI.builder.write(frame_ob);
 
+  /*
   let frame_obj = { // AT Request to be sent
     type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,
     destination64: "0",
     command: "NI",
     commandParameter: [],
   };
-  xbeeAPI.builder.write(frame_obj);
+  xbeeAPI.builder.write(frame_obj);*/
 
 });
 
 // All frames parsed by the XBee will be emitted here
 
-storage.listSensors().then((sensors) => sensors.forEach((sensor) => console.log(sensor.data())))
-
+//storage.listSensors().then((sensors) => sensors.forEach((sensor) => console.log(sensor.data())))
 module.exports.receiveDataByXBEE = function () {
   xbeeAPI.parser.on("data", function (frame) {
     console.log(frame)
