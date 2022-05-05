@@ -26,7 +26,7 @@ serialport.pipe(xbeeAPI.parser);
 xbeeAPI.builder.pipe(serialport);
 
 serialport.on("open", function () {
-  game.StartingGame()
+  game.openXBEE()
   console.log("serial opened")
   // let frame_ob = { // AT Request to be sent
   //   type: C.FRAME_TYPE.REMOTE_AT_COMMAND_REQUEST,

@@ -1,22 +1,20 @@
 const server = require('../../server')
 const localStorage = require('../Services/LocalStore/LocalStore')
+const database = require("../../storage");
 
-module.exports.StartingGame = function() {
-    // here notified by mobile app for start game
-    /**
-     * the truc qui fait que quand on envoie vrai ou faut on ouvre les ports
-     * et stocker les ports
-     */
-    var data = {
-        "users": [{
-                'name': 'Lexo'
-            },
-            { 'name': 'ANTOINE LE MEC TROP BEAU JE SUIS SUR TU SUCE MIEUX QUE MON EX' },
-        ]
-    }
-    localStorage.writeData('users', data)
-    mesCouilles = localStorage.readData('users')
-    console.log(mesCouilles[0])
-    server.receiveDataByXBEE()
+module.exports.openXBEE = function () {
+  server.receiveDataByXBEE()
+}
 
+module.exports.StartGame = function () {
+  let isPlaying = localStorage.readDataByIndex('isPlaying')
+  // here notified by mobile app for start game
+  if (isPlaying) {
+    setTimeout(sendDataAfterGame, 60000)
+  }
+}
+
+function sendDataAfterGame() {
+  // envoie des results
+  database.sendAllResultAfterGame(localStorage.readDataByIndex('users'));
 }

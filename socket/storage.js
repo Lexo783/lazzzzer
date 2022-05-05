@@ -1,5 +1,6 @@
 const admin = require('firebase-admin');
 const serviceAccount = require('./serviceAccountKey.json');
+const localStorage = require("./src/Services/LocalStore/LocalStore");
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
@@ -61,9 +62,9 @@ module.exports.writeUserData = async function(userId, name, points) {
     const docRef = db.collection('users').doc(userId);
 
     const user = {
-        userId: userId,
-        name: name,
-        points: points,
+      userId: data[key].userId,
+      name: data[key].name,
+      scores: data[key].scores,
     }
 
     await docRef.get().then((snapshotDoc) => {
@@ -72,6 +73,32 @@ module.exports.writeUserData = async function(userId, name, points) {
         else
             docRef.update(user);
     })
+}
+
+/**
+ * Creates an user in database if the user given in parameter doesnt exist, if he exists overwites his informations
+ * @param data
+ */
+module.exports.sendAllResultAfterGame = async function(data) {
+
+  for (let key in data) {
+    const docRef = db.collection('users').doc(data[key].userId);
+
+    const user = {
+      userId: data[key].userId,
+      name: data[key].name,
+      scores: data[key].scores,
+    }
+
+    await docRef.get().then((snapshotDoc) => {
+      if (!snapshotDoc.exists)
+        docRef.set(user);
+      else
+        docRef.update(user);
+    })
+  }
+
+
 }
 
 
