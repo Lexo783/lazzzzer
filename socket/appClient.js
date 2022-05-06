@@ -6,20 +6,23 @@ const app = express();
 const port = process.env.PORT || 8080;
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 
-app.post('/api/users', function(req, res) {
-  const users = () => {
-    let users = [];
-    for(let key in req.body) {
-      users.push({
-        'userId': req.body[key].userId,
-        'scores': req.body[key].scores,
-        'name': req.body[key].name
-      })
-    }
-    return users
-  }
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/client/home.html')
+})
+app.post('/api/users', function (req, res) {
+  const users = () => [{
+      'userId': req.body.userId,
+      'scores': req.body.scores,
+      'name': req.body.name1
+    }, {
+      'userId': req.body.userId,
+      'scores': req.body.scores,
+      'name': req.body.name2
+    }]
+  console.log(users)
+
   localStorage.writeData('users', users)
   /*
   res.send({
@@ -29,7 +32,7 @@ app.post('/api/users', function(req, res) {
   });*/
 });
 
-app.post('/api/openGame', function(req, res) {
+app.post('/api/openGame', function (req, res) {
   localStorage.writeData('isPlaying', req.body.playing)
   game.StartGame()
   /*
