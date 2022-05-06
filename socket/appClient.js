@@ -8,12 +8,12 @@ const port = process.env.PORT || 8080;
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(express.static(__dirname + '/client/public'));
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/client/Home.html')
 })
 app.post('/api/users', function (req, res) {
-  console.log(req.body)
   const users = [{
       'userId': req.body.userId1,
       'scores': 0,
@@ -23,21 +23,13 @@ app.post('/api/users', function (req, res) {
       'scores': 0,
       'name': req.body.name2
     }]
-  console.log(users)
+
+
   localStorage.writeData('users', users)
-  localStorage.writeData('isPlaying', req.body.playing)
+  localStorage.writeData('isPlaying', true)
   game.StartGame()
 
-  res.sendFile(__dirname + '/client/Home.html')
-});
-
-app.post('/api/openGame', function (req, res) {
-  /*
-  res.send({
-    'userId': userId,
-    'scores': scores,
-    'name': name
-  });*/
+  res.sendFile(__dirname + '/client/PlayingGame.html')
 });
 
 app.listen(port);

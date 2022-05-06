@@ -110,7 +110,6 @@ module.exports.sendAllResultAfterGame = async function(data) {
 module.exports.getOneUser = async function(userId) {
     const docRef = db.collection('users').doc(userId);
 
-
     return docRef.get()
 }
 

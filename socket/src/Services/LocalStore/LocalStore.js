@@ -7,23 +7,32 @@ var objLocalStore = {
  * @param key
  */
 module.exports.writeData = function(key, data) {
+  if(typeof data === 'object' && data !== null) {
     if (key in objLocalStore) {
-        objLocalStore[key] = {...objLocalStore[key], ...data }
+      objLocalStore[key] = {...objLocalStore[key], ...data }
     } else {
-        objLocalStore[key] = {...objLocalStore, ...data }
+      objLocalStore[key] = data
     }
+  } else {
+    objLocalStore[key] = data
+  }
 }
+
+module.exports.clearData = function(key) {
+  objLocalStore[key] = null
+}
+
 /**
  * get a collection
  * @param pointer
  * @returns {null|*}
  */
 module.exports.readDataByIndex = function(pointer = null) {
-    if (pointer !== null) {
-        return objLocalStore[pointer]
-    } else {
-        return null
-    }
+  if (pointer !== null) {
+    return objLocalStore[pointer]
+  } else {
+    return null
+  }
 }
 
 /**
