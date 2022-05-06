@@ -3,6 +3,7 @@ const localStorage = require('../Services/LocalStore/LocalStore')
 const database = require("../../storage");
 
 module.exports.openXBEE = function () {
+  localStorage.writeData('isPlaying', false)
   server.receiveDataByXBEE()
 }
 
@@ -15,6 +16,8 @@ module.exports.StartGame = function () {
 }
 
 function sendDataAfterGame() {
+
+  localStorage.writeData('isPlaying', false)
   // envoie des results
   database.sendAllResultAfterGame(localStorage.readDataByIndex('users'));
 }
