@@ -16,12 +16,4 @@ label{
     margin-bottom: 20px;
     width: 30%;
 }
-.form_buttons{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 20px;
-}
-.textInput{
 
-}
