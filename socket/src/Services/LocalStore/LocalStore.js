@@ -18,6 +18,10 @@ module.exports.writeData = function(key, data) {
   }
 }
 
+module.exports.writeDataUser = function(key, data) {
+  objLocalStore['users'][key] = data
+}
+
 module.exports.clearData = function(key) {
   objLocalStore[key] = null
 }

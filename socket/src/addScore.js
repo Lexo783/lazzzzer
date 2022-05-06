@@ -5,10 +5,14 @@ module.exports.addScores = function(killed, killer) {
   let groups = localStorage.readDataByIndex('users')
   for (let key in groups) {
     if (killed === groups[key].id) {
-      localStorage.writeData('users', groups[key].scores = groups[key].scores - 1)
+      const newData = groups[key]
+      newData.scores -= 1
+      localStorage.writeDataUser(key, newData)
     }
     if (killer === groups[key].id) {
-      localStorage.writeData('users', groups[key].scores + 2)
+      const newData = groups[key]
+      newData.scores += 2
+      localStorage.writeData(key, newData)
     }
   }
 
