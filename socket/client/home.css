@@ -1,7 +1,9 @@
 label{
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-
+h3{
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
 .container{
     display: flex;
     flex-direction: column;
