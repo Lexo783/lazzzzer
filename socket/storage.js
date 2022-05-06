@@ -82,7 +82,7 @@ module.exports.writeUserData = async function(userId, name, points) {
 module.exports.sendAllResultAfterGame = async function(data) {
 
   for (let key in data) {
-    const docRef = db.collection('users').doc(data[key].userId);
+    const docRef = db.collection('users').doc(data[key].name);
 
     const user = {
       userId: data[key].userId,
