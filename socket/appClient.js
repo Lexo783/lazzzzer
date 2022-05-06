@@ -1,7 +1,6 @@
 const express = require('express');
 const localStorage = require("./src/Services/LocalStore/LocalStore");
 const game = require('./src/Controller/GameController')
-const bodyParser = require('body-parser');
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -24,9 +23,9 @@ app.post('/api/users', function (req, res) {
       'name': req.body.name2
     }]
 
-
   localStorage.writeData('users', users)
   localStorage.writeData('isPlaying', true)
+  localStorage.writeData('timer', req.body.timer * 1000)
   game.StartGame()
 
   res.sendFile(__dirname + '/client/PlayingGame.html')
